@@ -170,3 +170,23 @@ pid_t Fork (void)
 	}
 	return n;
 }
+
+
+int UDP_ServerConnection(char* port)
+{
+	int fd, ret; 
+	struct addrinfo hints, *res;
+	
+	fd = Socket(AF_INET, SOCK_DGRAM, 0); 
+	
+	memset(&hints,0,sizeof hints);
+	hints.ai_family=AF_INET;//IPv4
+	hints.ai_socktype=SOCK_DGRAM;//UDP socket
+	hints.ai_flags=AI_PASSIVE;	
+	
+	ret = Getaddrinfo(NULL, port, &hints, &res); 
+	ret = Bind(fd, res->ai_addr, res->ai_addrlen); 
+	
+	freeaddrinfo(res); 
+	return fd;
+}

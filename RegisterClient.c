@@ -1,15 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <sys/wait.h> 
-#include <signal.h>
+#include "network.h" 
 
 #define MAX_MESS 2048
 #define MAX_LINE 1024
