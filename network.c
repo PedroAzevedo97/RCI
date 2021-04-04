@@ -172,10 +172,10 @@ pid_t Fork (void)
 }
 
 
-int UDP_ServerConnection(char* port)
+int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res)
 {
 	int fd, ret; 
-	struct addrinfo hints, *res;
+	struct addrinfo hints;
 	
 	fd = Socket(AF_INET, SOCK_DGRAM, 0); 
 	
@@ -184,9 +184,8 @@ int UDP_ServerConnection(char* port)
 	hints.ai_socktype=SOCK_DGRAM;//UDP socket
 	hints.ai_flags=AI_PASSIVE;	
 	
-	ret = Getaddrinfo(NULL, port, &hints, &res); 
-	ret = Bind(fd, res->ai_addr, res->ai_addrlen); 
+	ret = Getaddrinfo(IP, port, &hints, res); 
+	ret = Bind(fd, (*res)->ai_addr, (*res)->ai_addrlen); 
 	
-	freeaddrinfo(res); 
 	return fd;
 }

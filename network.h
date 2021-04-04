@@ -12,6 +12,8 @@
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
 
+#define MAX_MESS 2048
+#define MAX_LINE 1024
 
 int Gethostname(char *name, size_t len); 
 int Getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res); 
@@ -27,4 +29,4 @@ int Listen(int sockfd, int backlog);
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 pid_t Fork (void); 
-int UDP_ServerConnection (char *port); 
+int UDP_ServerConnection (char *IP, char *port, struct addrinfo **res); 
