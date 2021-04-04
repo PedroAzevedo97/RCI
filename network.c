@@ -189,3 +189,59 @@ int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res)
 	
 	return fd;
 }
+
+
+void Finish(struct addrinfo **res, int *udp_server)
+{
+	freeaddrinfo(*res); 
+	Close(*fudp_server); 
+	exit(0); 
+}
+
+int Waiting(int *udp_server, struct addrinfo **res)
+{
+	char line[MAX_LINE], command[MAX_LINE], message[MAX_MESS+1]; 
+	int ret, state_value=-1;
+	fd_set rfds;
+	socklen_t addrlen;
+	struct sockaddr servaddr;
+	ssize_t n;
+	
+	printf("Waiting for confirmation ... you can exit\n"); 
+	
+	/* wait either for confirmation of unregistration or for exit */ 
+	
+	FD_ZERO(&rfds);
+	FD_SET(0, &rfds);
+	FD_SET(*udp_server, &rfds);
+    
+    ret = Select((*udp_server) + 1, &rfds, (fd_set *) NULL, (fd_set *) NULL, (struct timeval *) NULL);
+
+	if(FD_ISSET(*udp_server, &rfds)) 
+	{
+		/* receive confirmation from server*/ 
+		addrlen=sizeof(servaddr); 
+		n=Recvfrom(*udp_server, message, MAX_MESS, 0, &servaddr, &addrlen); 
+		message[n]='\0'; 
+		
+		if(strcmp(message, "OKREG")==0)
+		{
+			state_value=VALUE_REG; 
+			printf("Ok you are registered\n"); 
+		}
+		
+		else if(strcmp(message, "OKUNREG")==0)
+		{
+			state_value=VALUE_NOTREG; 
+			printf("Ok, you are not registered\n"); 
+		}
+	}
+	
+	else if(FD_ISSET(0, &rfds)) 
+	{
+		fgets(line, MAX_LINE, stdin); 
+		sscanf(line, "%s", command); 
+		if(strcmp(command, "exit")==0)
+			Finish(res, udp_server); 
+	}
+}

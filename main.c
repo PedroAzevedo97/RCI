@@ -56,43 +56,13 @@ int main (int argc, char *argv[])
 					state=regwait; 
 				}
 				else if(strcmp(command, "exit")==0) 
-				{
-					freeaddrinfo(res); 
-					Close(fd_UDPServer); 
-					exit(0); 
-				}
+					Finish(&res, &fd_UDPServer); 
 				break; /* notreg */
 			
 			
 			case regwait:
-				printf("Waiting for confirmation ... you can exit\n"); 
-				FD_ZERO(&rfds);
-				FD_SET(0, &rfds);
-				FD_SET(fd_UDPServer, &rfds);
-				ret = Select(fd_UDPServer + 1, &rfds, (fd_set *) NULL, (fd_set *) NULL, (struct timeval *) NULL);
-				if(FD_ISSET(fd_UDPServer, &rfds)) 
-				{
-					/* receive message from server*/ 
-					addrlen=sizeof(servaddr); 
-					n=Recvfrom(fd_UDPServer, message, MAX_MESS, 0, &servaddr, &addrlen); 
-					message[n]='\0'; 
-					if(strcmp(message, "OKREG")==0)
-					{
-						state=reg; 
-						printf("Ok you are registered\n"); 
-					}
-					else if(FD_ISSET(0, &rfds))
-					{
-						fgets(line, MAX_LINE, stdin); 
-						sscanf(line, "%s", command); 
-						if(strcmp(command, "exit")==0)
-						{
-							freeaddrinfo(res); 
-							Close(fd_UDPServer); 
-							exit(0); 
-						}
-					}
-				}
+				if (Waiting(&fd_UDPServer, &res)==VALUE_REG)
+					state=reg;
 				break; /*regwait*/
 				
 			case reg:
@@ -109,37 +79,8 @@ int main (int argc, char *argv[])
 				break; /* reg */ 
 			
 			case notregwait: 
-				printf("Waiting for confirmation ... you can exit\n"); 
-				
-				/* wait either for confirmation of unregistration or for exit */ 
-				FD_ZERO(&rfds);
-				FD_SET(0, &rfds);
-				FD_SET(fd_UDPServer, &rfds);
-				ret = Select(fd_UDPServer + 1, &rfds, (fd_set *) NULL, (fd_set *) NULL, (struct timeval *) NULL);
-				if(FD_ISSET(0, &rfds))
-				{
-					fgets(line, MAX_LINE, stdin); 
-					sscanf(line, "%s", command); 
-					if(strcmp(command, "exit")==0)
-					{
-						freeaddrinfo(res); 
-						Close(fd_UDPServer); 
-						exit(0); 
-					}
-				}
-				
-				else if(FD_ISSET(fd_UDPServer, &rfds))
-				{
-					/*receive confirmation */
-					addrlen=sizeof(servaddr); 
-					n=Recvfrom(fd_UDPServer, message, MAX_MESS, 0, &servaddr, &addrlen); 
-					message[n]='\0'; 
-					if(strcmp(message, "OKUNREG")==0)
-					{
-						state=notreg; 
-						printf("Ok, you are not registered\n"); 
-					}
-				}	
+				if (Waiting(&fd_UDPServer, &res)==VALUE_NOTREG)
+					state=notreg;
 				break; /* notregwait */	
 		} 
 	}

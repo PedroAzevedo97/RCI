@@ -14,6 +14,11 @@
 
 #define MAX_MESS 2048
 #define MAX_LINE 1024
+#define VALUE_NOTREG 1
+#define VALUE_REGWAIT 2
+#define VALUE_REG 3
+#define VALUE_NOTREGWAIT 4
+
 
 int Gethostname(char *name, size_t len); 
 int Getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res); 
@@ -29,4 +34,6 @@ int Listen(int sockfd, int backlog);
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 pid_t Fork (void); 
-int UDP_ServerConnection (char *IP, char *port, struct addrinfo **res); 
+int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res); 
+void Finish(struct addrinfo **res, int *udp_server);  
+int Waiting(int *udp_server, struct addrinfo **res); 
