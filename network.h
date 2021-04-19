@@ -14,10 +14,19 @@
 
 #define MAX_MESS 2048
 #define MAX_LINE 1024
+#define MAX_BUFFER 128
 #define VALUE_NOTREG 1
 #define VALUE_REGWAIT 2
 #define VALUE_REG 3
 #define VALUE_NOTREGWAIT 4
+
+#define JOIN_OK 21
+#define CREATE_OK 22
+#define GET_OK 23
+#define SHOW_OK 24
+#define LEAVE_OK 25
+#define EXIT_OK 26
+
 
 
 int Gethostname(char *name, size_t len); 
@@ -34,6 +43,13 @@ int Listen(int sockfd, int backlog);
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 pid_t Fork (void); 
+struct hostent *Gethostbyaddr( const void *addr, socklen_t len, int type);
+struct hostent *Gethostbyname( const char *name);
+//sighandler_t Signal(int signum, sighandler_t handler);
+int Shutdown(int sockfd, int type, int protocol);
+
+
 int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res); 
 void Finish(struct addrinfo **res, int *udp_server);  
 int Waiting(int *udp_server, struct addrinfo **res); 
+int user_interface (char* command, char* IP, char* port, int *fd_UDPServer, int *fd_TCPServer);

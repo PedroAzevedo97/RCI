@@ -7,12 +7,18 @@ int main (int argc, char *argv[])
 	char line[MAX_LINE], command[MAX_LINE], net[MAX_LINE], id[MAX_LINE], message[MAX_MESS+1]; 
 	int fd_UDPServer, ret; 
 	enum {notreg, regwait, reg, notregwait} state; 
-	struct addrinfo *res; 
+	struct addrinfo hints, *res; 
 	fd_set rfds; 
 	struct sockaddr servaddr;
 	socklen_t addrlen;
 	ssize_t n;
+	int sockfd;
 	
+	sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
+	
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
 	
 	/*INPUT ERROR TEST*/ 
 	if(argc!=5)

@@ -1,5 +1,9 @@
 #include "network.h" 
 
+extern int errno;
+extern int h_errno;
+
+
 int Gethostname(char *name, size_t len)
 {
 	int n; 
@@ -36,6 +40,7 @@ int Socket(int domain, int type, int protocol)
 	return n;
 }
 
+
 ssize_t Sendto(int s, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen)
 {
 	ssize_t n; 
@@ -47,6 +52,7 @@ ssize_t Sendto(int s, const void *buf, size_t len, int flags, const struct socka
 	}
 	return n;
 }
+
 
 
 ssize_t Recvfrom(int s, void *buf, size_t len, int flags, struct sockaddr *from, socklen_t *fromlen)
@@ -61,6 +67,8 @@ ssize_t Recvfrom(int s, void *buf, size_t len, int flags, struct sockaddr *from,
 	return n;
 }
 
+
+
 int Close(int fd)
 {
 	int n; 
@@ -73,6 +81,7 @@ int Close(int fd)
 	return n;	
 }
 
+
 int Connect(int sockfd, const struct sockaddr *serv_addr, socklen_t addrlen)
 {
 	int n; 
@@ -84,6 +93,7 @@ int Connect(int sockfd, const struct sockaddr *serv_addr, socklen_t addrlen)
 	}
 	return n;
 }
+
 
 ssize_t Write(int fd, const void *buf, size_t count)
 {
@@ -109,6 +119,7 @@ ssize_t Read(int fd, void *buf, size_t count)
 	return n;
 }
 
+
 int Bind(int sockfd, const struct sockaddr *my_addr, socklen_t addrlen)
 {
 	int n; 
@@ -120,6 +131,7 @@ int Bind(int sockfd, const struct sockaddr *my_addr, socklen_t addrlen)
 	}
 	return n;
 }
+
 
 int Listen(int sockfd, int backlog)
 {
@@ -134,7 +146,6 @@ int Listen(int sockfd, int backlog)
 }
 
 
-
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 {
 	int n; 
@@ -147,16 +158,17 @@ int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 	return n;	
 }
 
+
 int Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 {
-	int n; 
-	n=select(n, readfds, writefds, exceptfds, timeout); 
-	if(n<=0)
+	int m; 
+	m=select(n, readfds, writefds, exceptfds, timeout); 
+	if(m<=0)
 	{
 		perror("select"); 
 		exit(1); 
 	}
-	return n;
+	return m;
 }
 
 pid_t Fork (void)
@@ -169,6 +181,31 @@ pid_t Fork (void)
 		exit(1); 
 	}
 	return n;
+}
+
+int Gethostbyaddr(const void *addr, socklen_t, socklen_t len, int type)
+{
+	struct hostent *h; 
+	
+	h=gethostbyaddr(addr, len , hints, type);
+	if(n==NULL)
+	{
+		fprintf(stderr, "error_gethostbyaddr: %s\n", hstrerror(h_errno)); 
+		exit(1); 
+	}
+	return h;
+}
+
+int Gethostbyname(const char *name)
+{
+	struct hostent *n; 
+	h=gethostbyname(name);
+	if(n==NULL)
+	{
+		fprintf(stderrr, "error_gethostbyname: %s\n", hstrerror(h_errno)); 
+		exit(1); 
+	}
+	return h; 
 }
 
 
@@ -194,7 +231,7 @@ int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res)
 void Finish(struct addrinfo **res, int *udp_server)
 {
 	freeaddrinfo(*res); 
-	Close(*fudp_server); 
+	Close(*udp_server); 
 	exit(0); 
 }
 
@@ -245,3 +282,13 @@ int Waiting(int *udp_server, struct addrinfo **res)
 			Finish(res, udp_server); 
 	}
 }
+
+
+/*sighandler_t Signal( int signum, sighandler_t handler){
+	sighandler_t h;
+	if(( h= signal(signum, handler)) == SIG_ERR){
+		fprintf(stderr, "error_signal\n");
+	}
+	return h;
+}
+*/	
