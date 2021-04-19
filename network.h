@@ -53,3 +53,19 @@ int UDP_ServerConnection(char *IP, char *port, struct addrinfo **res);
 void Finish(struct addrinfo **res, int *udp_server);  
 int Waiting(int *udp_server, struct addrinfo **res); 
 int user_interface (char* command, char* IP, char* port, int *fd_UDPServer, int *fd_TCPServer);
+
+
+/* NEW UDP FUNCTIONS */ 
+void UDP_ServerInit (struct addrinfo *hints);
+struct addrinfo *UDP_Socket(int *fd_UDPServer, char *IP, char *port, struct addrinfo *hints);
+int UDP_ServerAccess(char *port, struct addrinfo *hints);
+int UDP_SendMessage(int fd, char* data, int size, struct addrinfo *res);
+int UDP_ReceiveMessage(int fd, char* buffer, int size, struct sockaddr_in *addr);
+void UDP_AnswerMessage(int fd, char* message, int message_len, struct sockaddr *addr); 
+
+
+/*TCP Functions */
+void TCP_ServerInit (struct addrinfo *hints); 
+int TCP_Connection (char *IP, char *port, struct addrinfo *hints, struct addrinfo **res);
+int TCP_Read (int fd, char *buffer);
+void TCP_Write (int fd, char *data, int size);
